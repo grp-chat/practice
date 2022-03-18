@@ -1165,6 +1165,7 @@ function clickableGrid(rows, cols, callback, tblName, userId) {
             var cell = tr.appendChild(document.createElement('td'));
             if (r === 0) {
                 cell.innerHTML = c;
+                cell.style.backgroundColor = 'rgba(222,184,135, 0.7)';
             } else {
                 cell.innerHTML = 0;
             }
@@ -1177,11 +1178,11 @@ function clickableGrid(rows, cols, callback, tblName, userId) {
         }
     }
     grid.rows[0].cells[0].innerHTML = "Round";
-    grid.rows[0].cells[0].style.backgroundColor = "rgba(149, 165, 166, 0.3)";    
+    grid.rows[0].cells[0].style.backgroundColor = "rgba(222,184,135, 0.7)";    
     grid.rows[1].cells[0].innerHTML = "Result";
-    grid.rows[1].cells[0].style.backgroundColor = "rgba(149, 165, 166, 0.3)";  
+    grid.rows[1].cells[0].style.backgroundColor = "rgba(222,184,135, 0.7)";  
     grid.rows[2].cells[0].innerHTML = "Penalties";
-    grid.rows[2].cells[0].style.backgroundColor = "rgba(149, 165, 166, 0.3)";  
+    grid.rows[2].cells[0].style.backgroundColor = "rgba(222,184,135, 0.7)";  
     return grid;
 }
 
@@ -1483,6 +1484,7 @@ var div0 = createNewDiv();
 div0.style.clear = "both";
 div0.style.width = "1000px";
 div0.style.height = "5px";
+div0.style.backgroundColor = "";
 document.body.appendChild(div0);
 
 //BOTTOM===DIV===BOTTOM===DIV===BOTTOM===DIV===BOTTOM===DIV===BOTTOM===DIV===BOTTOM===DIV===BOTTOM===DIV===
