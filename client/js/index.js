@@ -18,6 +18,8 @@ var userId6 = "JL";
 var userId7 = "SZF";
 var userId8 = ""; */
 
+var lastClicked;
+
 var userId3 = "LK";
 var userId4 = "TJY";
 var userId5 = "LXR";
@@ -27,6 +29,9 @@ var userId8 = "JL";
 
 var team1 = ["LK", "JHA", "SZF"];
 var team2 = ["TJY", "LXR", "JL"];
+var otherUsers = ["TJY", "LXR", "JL", "LK", "JHA", "SZF"];
+var students = ["TJY", "LXR", "JL", "LK", "JHA", "SZF"];
+var rounds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
 var nickname = '';
 var connectedUser = '';
@@ -61,6 +66,13 @@ var KNins = 0;
 var KNChas = 1;
 
 var lifeGiven = 0;
+
+function Person(first, last, age, eye) {
+    this.firstName = first;
+    this.lastName = last;
+    this.age = age;
+    this.eyeColor = eye;
+}
 
 
 //---------------------------------------- USER PIN NUMBER PROMPT -----------------------------------------
@@ -125,20 +137,15 @@ sock.emit('newuser', nickname);
 
 //++++++++++++++++++++++++++++++++++++++++ DOCUMENT OBJECT METHOD UPDATE +++++++++++++++++++++++++++++++++++
 
-var theRound = document.getElementById("h1");
+/* var theRound = document.getElementById("h1");
 theRound.innerHTML = "Infinity War - Round" + roundNum;
 document.body.appendChild(createContainerFluid());
 
-let mainDiv = document.getElementById("maindiv");
+let mainDiv = document.getElementById("maindiv"); */
 
-/* document.body.appendChild(createNewRow(wordRow + rowNum, userName, userId));
-rowNum++;
-document.body.appendChild(createNewRow(wordRow + rowNum, userName2, userId2));
-rowNum++;
-document.body.appendChild(createHrLine(rowNum));
-rowNum++; */
 
-document.body.appendChild(createNewRow(wordRow + rowNum, userName2, userId3));
+
+/* document.body.appendChild(createNewRow(wordRow + rowNum, userName2, userId3));
 rowNum++;
 document.body.appendChild(createNewRow(wordRow + rowNum, userName2, userId4));
 rowNum++;
@@ -156,13 +163,77 @@ document.body.appendChild(createNewRow(wordRow + rowNum, userName2, userId8));
 rowNum++;
 document.body.appendChild(createHrLine(wordRow + rowNum));
 rowNum++;
-document.body.appendChild(createBotBtn(wordRow + rowNum));
+document.body.appendChild(createBotBtn(wordRow + rowNum)); */
 
 //++++++++++++++++++++++++++++++++++++++++ DOCUMENT OBJECT METHOD UPDATE +++++++++++++++++++++++++++++++++++
 
 
 //}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}} LISTENERS FROM SERVER {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
-sock.on('updateallwins', data => {
+sock.on('transmituser', data => {
+
+    if (data === "TCR") { } else {
+        var span2Id = data + "span2"
+        var togSpan = document.getElementById(span2Id);
+        togSpan.style.background = "green";
+    }
+
+});
+
+sock.on('userdisconnect', data => {
+
+    if (nickname !== "TCR") {
+        var span2Id = data + "span2"
+        var togSpan = document.getElementById(span2Id);
+        togSpan.style.background = "black";
+    }
+
+});
+
+sock.on('updateallresults', data => {
+
+    var tableId = data.id + "tbl"
+    var updTable = document.getElementById(tableId);
+    var resArray = data.results
+
+    data.results.forEach((item, index) => {
+        updTable.rows[1].cells[index + 1].innerHTML = item;
+    });
+
+    data.penalties.forEach((item, index) => {
+        updTable.rows[2].cells[index + 1].innerHTML = item;
+    });
+
+});
+
+sock.on('refreshall', data => {
+    //changeBackground(rotation);
+    //rotation++;
+
+    //if (rotation >= 13) {rotation = 1};
+    //lifeGiven = 0;
+    roundNum = data;
+    labelRes.innerHTML = "Round " + roundNum + " - Result:";
+
+
+    var clearIt = document.getElementById(nickname + "inputres");
+    clearIt.value = '';
+    clearIt = document.getElementById(nickname + "inputpen");
+    clearIt.value = '';
+});
+
+sock.on('reshistory', data => {
+
+    console.log(data.id + "//Result:" + data.results[roundNum - 1] + "//Round:" + roundNum);
+    console.log(data.id + " entered result " + data.results[roundNum - 1] + " on Round " + roundNum);
+
+});
+
+sock.on('chat-to-clients', data => {
+    appendMessage(data);
+});
+
+
+/* sock.on('updateallwins', data => {
     if (data.aumWins > aumWins) {
         var aumWinDif = data.aumWins - aumWins;
         var userId = "AA"
@@ -351,84 +422,9 @@ sock.on('updateallchas', data => {
 
 });
 
-sock.on('transmituser', data => {
-    userOnline = data;
-    if (userOnline === "Aum") {
-        var togSpan = document.getElementById('AAspan');
-        togSpan.style.background = "green";
-    };
-    if (userOnline === "Nina") {
-        var togSpan = document.getElementById('NNspan');
-        togSpan.style.background = "green";
 
-    };
-    if (userOnline === "LK") {
-        var togSpan = document.getElementById('LKspan');
-        togSpan.style.background = "green";
-    };
-    if (userOnline === "LXR") {
-        var togSpan = document.getElementById('LXRspan');
-        togSpan.style.background = "green";
 
-    };
-    if (userOnline === "JHA") {
-        var togSpan = document.getElementById('JHAspan');
-        togSpan.style.background = "green";
 
-    };
-    if (userOnline === "SZF") {
-        var togSpan = document.getElementById('SZFspan');
-        togSpan.style.background = "green";
-
-    };
-    if (userOnline === "JL") {
-        var togSpan = document.getElementById('JLspan');
-        togSpan.style.background = "green";
-
-    };
-    if (userOnline === "TJY") {
-        var togSpan = document.getElementById('TJYspan');
-        togSpan.style.background = "green";
-
-    };
-
-});
-
-sock.on('userdisconnect', data => {
-    userOffline = data;
-    /* if (userOffline === "Aum") {
-        var togSpan = document.getElementById('AAspan');
-        togSpan.style.background = "red";
-    };
-    if (userOffline === "Nina") {
-        var togSpan = document.getElementById('NNspan');
-        togSpan.style.background = "red";
-    }; */
-    if (userOffline === "LK") {
-        var togSpan = document.getElementById('LKspan');
-        togSpan.style.background = "red";
-    };
-    if (userOffline === "LXR") {
-        var togSpan = document.getElementById('LXRspan');
-        togSpan.style.background = "red";
-    };
-    if (userOffline === "JHA") {
-        var togSpan = document.getElementById('JHAspan');
-        togSpan.style.background = "red";
-    };
-    if (userOffline === "SZF") {
-        var togSpan = document.getElementById('SZFspan');
-        togSpan.style.background = "red";
-    };
-    if (userOffline === "JL") {
-        var togSpan = document.getElementById('JLspan');
-        togSpan.style.background = "red";
-    };
-    if (userOffline === "TJY") {
-        var togSpan = document.getElementById('TJYspan');
-        togSpan.style.background = "red";
-    };
-});
 
 sock.on('updateallresults', data => {
     if (data.userId === "AA") {
@@ -520,7 +516,7 @@ sock.on('sendrequest', data => {
     if (nickname === data.requestToId) {
         alert(data.requesterId +  " is requesting 1 life from you");
     }
-});
+}); */
 //}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}} LISTENERS FROM SERVER {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 
 
@@ -630,7 +626,7 @@ function createNewRow(rowNum, userName, userId) {
     if (userId != nickname) {
         divCol4b.disabled = true;
     }
-    
+
     divCol4b.addEventListener('click', function () {
         //GIVE  
 
@@ -645,7 +641,7 @@ function createNewRow(rowNum, userName, userId) {
                 alert(userId + " has given 1 life to " + giveToId)
                 sock.emit('give', { giveToId, userId });
                 lifeGiven++;
-            } else { alert("You cancelled")}
+            } else { alert("You cancelled") }
 
         }
 
@@ -660,7 +656,7 @@ function createNewRow(rowNum, userName, userId) {
                 alert(userId + " has given 1 life to " + giveToId)
                 sock.emit('give', { giveToId, userId });
                 lifeGiven++;
-            } else { alert("You cancelled")}
+            } else { alert("You cancelled") }
 
         }
 
@@ -675,7 +671,7 @@ function createNewRow(rowNum, userName, userId) {
                 alert(userId + " has given 1 life to " + giveToId)
                 sock.emit('give', { giveToId, userId });
                 lifeGiven++;
-            } else { alert("You cancelled")}
+            } else { alert("You cancelled") }
 
         }
 
@@ -690,7 +686,7 @@ function createNewRow(rowNum, userName, userId) {
                 alert(userId + " has given 1 life to " + giveToId)
                 sock.emit('give', { giveToId, userId });
                 lifeGiven++;
-            } else { alert("You cancelled")}
+            } else { alert("You cancelled") }
 
         }
 
@@ -705,7 +701,7 @@ function createNewRow(rowNum, userName, userId) {
                 alert(userId + " has given 1 life to " + giveToId)
                 sock.emit('give', { giveToId, userId });
                 lifeGiven++;
-            } else { alert("You cancelled")}
+            } else { alert("You cancelled") }
 
         }
 
@@ -720,7 +716,7 @@ function createNewRow(rowNum, userName, userId) {
                 alert(userId + " has given 1 life to " + giveToId)
                 sock.emit('give', { giveToId, userId });
                 lifeGiven++;
-            } else { alert("You cancelled")}
+            } else { alert("You cancelled") }
 
         }
 
@@ -1072,6 +1068,28 @@ function createDropList(userId, elToApply, teamNum) {
     elToApply.appendChild(listLabel).appendChild(select);
 }
 
+function createDropList2(students) {
+    var select = document.createElement("select");
+    select.name = students;
+    //select.id = teamNum;
+    select.setAttribute("id", "students");
+    select.className = "form-control";
+    select.style.width = "80px";
+
+    for (const val of students) {
+        var option = document.createElement("option");
+        option.value = val;
+        option.text = val.charAt(0).toUpperCase() + val.slice(1);
+        select.appendChild(option);
+    }
+
+    var listLabel = document.createElement("label");
+    listLabel.innerHTML = ""
+    listLabel.htmlFor = students;
+
+    document.body.appendChild(listLabel).appendChild(select);
+}
+
 function changeBackground(rotation) {
     if (rotation === 2) {
         var url = 'https://cdnb.artstation.com/p/assets/images/images/014/324/815/large/chris-kesler-1.jpg?1543495968';
@@ -1088,7 +1106,7 @@ function changeBackground(rotation) {
     if (rotation === 6) {
         url = 'https://www.teahub.io/photos/full/94-945045_marvel-comic-space-backgrounds.jpg';
         document.body.style.backgroundImage = "url(" + url + ")";
-        
+
     }
 
     if (rotation === 8) {
@@ -1107,12 +1125,434 @@ function changeBackground(rotation) {
         document.body.style.backgroundSize = "1700px";
     }
 
-    
 
-    
-    
-    
- }
+
+
+
+
+}
 
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+function appendMessage (message) {
+    const messageDiv = document.createElement('div');
+    messageDiv.innerText = message;
+    div3.append(messageDiv);
+    div3.scrollTop = div3.scrollHeight;
+}
+
+function clickableGrid(rows, cols, callback, tblName, userId) {
+    var i = 0;
+    var grid = document.createElement('table');
+    grid.setAttribute("id", userId + "tbl")
+    grid.className = 'grid';
+    grid.style = "color:black";
+    //grid.style.float = "left";
+    redTitle = grid.appendChild(document.createElement('th'));
+    redTitle.style = "background:rgba(255, 0, 0, 0.6); color:white";
+    redTitle.colSpan = 3;
+    redTitle.innerHTML = userId;
+    var span2 = redTitle.appendChild(document.createElement('span'));
+    span2.setAttribute("id", userId + "span2");
+    span2.style = "width:20px;height:20px";
+    span2.style.display = "inline-block";
+    span2.style.background = "black";
+    if (nickname === "TCR") {span2.style.background = "green";}
+    for (var r = 0; r < rows; ++r) {
+        var tr = grid.appendChild(document.createElement('tr'));
+        for (var c = 0; c < cols; ++c) {
+            var cell = tr.appendChild(document.createElement('td'));
+            if (r === 0) {
+                cell.innerHTML = c;
+            } else {
+                cell.innerHTML = 0;
+            }
+
+            cell.addEventListener('click', (function (el, r, c, i) {
+                return function () {
+                    callback(el, r, c, i);
+                }
+            })(cell, r, c, i), false);
+        }
+    }
+    grid.rows[0].cells[0].innerHTML = "Round";
+    grid.rows[1].cells[0].innerHTML = "Result";
+    grid.rows[2].cells[0].innerHTML = "Penalties";
+    return grid;
+}
+
+function createNewDiv() {
+    var div = document.createElement("div");
+    div.setAttribute("id", "botdiv");
+    div.style.width = "750px";
+    div.style.height = "300px";
+    //div.style = "background:rgba(255, 255, 255, 0.5); color:black; overflow: auto;"
+    div.style.background = "rgba(255, 255, 255, 0.5)";
+    div.style.color = "black";
+    div.style.overflow = "auto";
+    div.style.overflowX = "hidden";
+    //div.style.float = "left";
+    div.style.marginLeft = "2%";
+    //div.innerHTML = "div";
+    return div;
+}
+
+const index = otherUsers.indexOf(nickname);
+if (index > -1) {
+    otherUsers.splice(index, 1);
+}
+//alert(otherUsers);
+
+var grid = clickableGrid(3, 11, function (el, row, col, i) {
+    console.log("You clicked on element:", el);
+    console.log("You clicked on row:", row);
+    console.log("You clicked on col:", col);
+    console.log("You clicked on item #:", i);
+
+    el.className = 'clicked';
+    if (lastClicked) lastClicked.className = '';
+    lastClicked = el;
+    number = i
+
+    /* if (i == 15){
+        alert("play hit video")
+    } */
+}, "tbl1", nickname);
+
+var grid2 = clickableGrid(3, 11, function (el, row, col, i) {
+    console.log("You clicked on element:", el);
+    console.log("You clicked on row:", row);
+    console.log("You clicked on col:", col);
+    console.log("You clicked on item #:", i);
+
+    el.className = 'clicked';
+    if (lastClicked) lastClicked.className = '';
+    lastClicked = el;
+    number = i
+
+    /* if (i == 15){
+        alert("play hit video")
+    } */
+}, "tbl2", otherUsers[0]);
+
+var grid3 = clickableGrid(3, 11, function (el, row, col, i) {
+    console.log("You clicked on element:", el);
+    console.log("You clicked on row:", row);
+    console.log("You clicked on col:", col);
+    console.log("You clicked on item #:", i);
+
+    el.className = 'clicked';
+    if (lastClicked) lastClicked.className = '';
+    lastClicked = el;
+    number = i
+
+    /* if (i == 15){
+        alert("play hit video")
+    } */
+}, "tbl3", otherUsers[1]);
+
+var grid4 = clickableGrid(3, 11, function (el, row, col, i) {
+    console.log("You clicked on element:", el);
+    console.log("You clicked on row:", row);
+    console.log("You clicked on col:", col);
+    console.log("You clicked on item #:", i);
+
+    el.className = 'clicked';
+    if (lastClicked) lastClicked.className = '';
+    lastClicked = el;
+    number = i
+
+    /* if (i == 15){
+        alert("play hit video")
+    } */
+}, "tbl4", otherUsers[2]);
+
+var grid5 = clickableGrid(3, 11, function (el, row, col, i) {
+    console.log("You clicked on element:", el);
+    console.log("You clicked on row:", row);
+    console.log("You clicked on col:", col);
+    console.log("You clicked on item #:", i);
+
+    el.className = 'clicked';
+    if (lastClicked) lastClicked.className = '';
+    lastClicked = el;
+    number = i
+
+    /* if (i == 15){
+        alert("play hit video")
+    } */
+}, "tbl5", otherUsers[3]);
+
+var grid6 = clickableGrid(3, 11, function (el, row, col, i) {
+    console.log("You clicked on element:", el);
+    console.log("You clicked on row:", row);
+    console.log("You clicked on col:", col);
+    console.log("You clicked on item #:", i);
+
+    el.className = 'clicked';
+    if (lastClicked) lastClicked.className = '';
+    lastClicked = el;
+    number = i
+
+    /* if (i == 15){
+        alert("play hit video")
+    } */
+}, "tbl6", otherUsers[4]);
+
+if (nickname === "TCR") {
+    var grid7 = clickableGrid(3, 11, function (el, row, col, i) {
+        console.log("You clicked on element:", el);
+        console.log("You clicked on row:", row);
+        console.log("You clicked on col:", col);
+        console.log("You clicked on item #:", i);
+
+        el.className = 'clicked';
+        if (lastClicked) lastClicked.className = '';
+        lastClicked = el;
+        number = i
+
+        /* if (i == 15){
+            alert("play hit video")
+        } */
+    }, "tbl7", otherUsers[5]);
+}
+
+document.body.appendChild(grid);
+grid.style.marginLeft = "2.8%";
+grid.style.float = "left";
+
+
+//LABEL=====LABEL=====LABEL=====LABEL=====LABEL=====LABEL=====LABEL=====LABEL=====LABEL=====LABEL=====
+labelRes = document.createElement('h2');
+//labelRes.setAttribute("id", "labelres");
+labelRes.innerHTML = "Round 1 - Result:";
+labelRes.style.width = "300px";
+labelRes.style.color = "mediumblue";
+labelRes.style.float = "left";
+labelRes.style.marginLeft = "10px"
+document.body.appendChild(labelRes);
+//LABEL=====LABEL=====LABEL=====LABEL=====LABEL=====LABEL=====LABEL=====LABEL=====LABEL=====LABEL=====
+
+//INPUT=====INPUT=====INPUT=====INPUT=====INPUT=====INPUT=====INPUT=====INPUT=====INPUT=====INPUT=====
+var inputRes = document.createElement('input');
+inputRes.className = "form-control input-lg";
+inputRes.style.width = "7.8%";
+inputRes.style.height = "48px";
+inputRes.setAttribute("id", nickname + "inputres");
+inputRes.setAttribute("type", "number");
+inputRes.style.float = "left";
+document.body.appendChild(inputRes);
+//INPUT=====INPUT=====INPUT=====INPUT=====INPUT=====INPUT=====INPUT=====INPUT=====INPUT=====INPUT=====
+
+//BUTTON=====BUTTON=====BUTTON=====BUTTON=====BUTTON=====BUTTON=====BUTTON=====BUTTON=====BUTTON=====
+var subBtn = document.createElement('button');
+
+subBtn.className = "btn btn-secondary btn-lg";
+subBtn.setAttribute("id", nickname + "subbtn");
+subBtn.innerHTML = "Submit"
+if (nickname === "TCR") {
+    subBtn.disabled = true;
+}
+document.body.appendChild(subBtn);
+
+//BUTTON=====BUTTON=====BUTTON=====BUTTON=====BUTTON=====BUTTON=====BUTTON=====BUTTON=====BUTTON=====
+
+//LABEL=====LABEL=====LABEL=====LABEL=====LABEL=====LABEL=====LABEL=====LABEL=====LABEL=====LABEL=====
+labelPen = document.createElement('h2');
+labelPen.innerHTML = "Penalty Points:";
+labelPen.style.width = "300px";
+labelPen.style.color = "mediumblue";
+labelPen.style.float = "left";
+labelPen.style.marginLeft = "10px"
+document.body.appendChild(labelPen);
+//LABEL=====LABEL=====LABEL=====LABEL=====LABEL=====LABEL=====LABEL=====LABEL=====LABEL=====LABEL=====
+
+//INPUT=====INPUT=====INPUT=====INPUT=====INPUT=====INPUT=====INPUT=====INPUT=====INPUT=====INPUT=====
+var inputPen = document.createElement('input');
+inputPen.className = "form-control input-lg";
+inputPen.style.width = "7.8%";
+inputPen.style.height = "48px";
+inputPen.setAttribute("id", nickname + "inputpen");
+inputPen.setAttribute("type", "number");
+inputPen.style.float = "left";
+document.body.appendChild(inputPen);
+//INPUT=====INPUT=====INPUT=====INPUT=====INPUT=====INPUT=====INPUT=====INPUT=====INPUT=====INPUT=====
+
+//BUTTON===LISTENER===BUTTON===LISTENER===BUTTON===LISTENER===BUTTON===LISTENER===BUTTON===LISTENER===
+subBtn.addEventListener('click', function () {
+    var result = document.getElementById(nickname + "inputres").value;
+    if (result) { } else { result = 0; }
+    var penalties = document.getElementById(nickname + "inputpen").value;
+    if (penalties) { } else { penalties = 0; }
+    sock.emit('submit', { nickname, result, penalties });
+    //subBtn.disabled = true;
+});
+//BUTTON===LISTENER===BUTTON===LISTENER===BUTTON===LISTENER===BUTTON===LISTENER===BUTTON===LISTENER===
+
+//EDIT=====BUTTON=====EDIT=====BUTTON=====EDIT=====BUTTON=====EDIT=====BUTTON=====EDIT=====BUTTON=====
+if (nickname === "TCR") {
+    var select = document.createElement("select");
+    select.name = students;
+    select.setAttribute("id", "studentslist");
+    select.className = "form-control";
+    select.style.width = "80px";
+    for (const val of students) {
+        var option = document.createElement("option");
+        option.value = val;
+        option.text = val.charAt(0).toUpperCase() + val.slice(1);
+        select.appendChild(option);
+    }
+    var listLabel = document.createElement("label");
+    listLabel.innerHTML = ""
+    listLabel.htmlFor = students;
+    document.body.appendChild(listLabel).appendChild(select);
+    select.style.position = "absolute";
+    select.style.top = "170px";
+    select.style.right = "170px";
+
+
+    var select2 = document.createElement("select");
+    select2.name = students;
+    select2.setAttribute("id", "roundslist");
+    select2.className = "form-control";
+    select2.style.width = "80px";
+    for (const val of rounds) {
+        var option = document.createElement("option");
+        option.value = val;
+        option.textContent = val;
+        select2.appendChild(option);
+    }
+    var listLabel2 = document.createElement("label");
+    listLabel2.innerHTML = ""
+    listLabel2.htmlFor = rounds;
+    document.body.appendChild(listLabel2).appendChild(select2);
+    select2.style.position = "absolute";
+    select2.style.top = "170px";
+    select2.style.right = "250px";
+
+    var editBtn = document.createElement('button');
+    editBtn.className = "btn btn-warning btn-lg";
+    editBtn.setAttribute("id", "editbtn");
+    editBtn.innerHTML = "Edit";
+    editBtn.style.position = "absolute";
+    editBtn.style.top = "170px";
+    editBtn.style.right = "100px";
+    document.body.appendChild(editBtn);
+
+    var nextrndBtn = document.createElement('button');
+    nextrndBtn.className = "btn btn-success btn-lg";
+    nextrndBtn.setAttribute("id", "nextrndbtn");
+    nextrndBtn.innerHTML = "Next Round";
+    nextrndBtn.style.position = "absolute";
+    nextrndBtn.style.top = "230px";
+    nextrndBtn.style.right = "100px";
+    document.body.appendChild(nextrndBtn);
+}
+
+//EDIT=====BUTTON=====EDIT=====BUTTON=====EDIT=====BUTTON=====EDIT=====BUTTON=====EDIT=====BUTTON=====
+
+//BUTTON===LISTENER===BUTTON===LISTENER===BUTTON===LISTENER===BUTTON===LISTENER===BUTTON===LISTENER===
+if (nickname === "TCR") {
+    editBtn.addEventListener('click', function () {
+        var result = document.getElementById(nickname + "inputres").value;
+        if (result) { } else { result = 0; }
+        var penalties = document.getElementById(nickname + "inputpen").value;
+        if (penalties) { } else { penalties = 0; }
+        var round = document.getElementById("roundslist").value;
+        if (round) { } else { round = 1; }
+        var student = document.getElementById("studentslist").value;
+
+        sock.emit('editresult', { student, result, penalties, round });
+        //subBtn.disabled = true;
+    });
+
+    nextrndBtn.addEventListener('click', function () {
+
+        sock.emit('nextround');
+        //subBtn.disabled = true;
+    });
+}
+//BUTTON===LISTENER===BUTTON===LISTENER===BUTTON===LISTENER===BUTTON===LISTENER===BUTTON===LISTENER===
+
+
+var div0 = createNewDiv();
+div0.style.clear = "both";
+div0.style.width = "1000px";
+div0.style.height = "5px";
+document.body.appendChild(div0);
+
+//BOTTOM===DIV===BOTTOM===DIV===BOTTOM===DIV===BOTTOM===DIV===BOTTOM===DIV===BOTTOM===DIV===BOTTOM===DIV===
+var div1 = createNewDiv();
+div1.style.float = "left";
+
+
+var bottomDiv = document.body.appendChild(div1);
+bottomDiv.appendChild(grid2);
+bottomDiv.appendChild(grid3);
+bottomDiv.appendChild(grid4);
+bottomDiv.appendChild(grid5);
+bottomDiv.appendChild(grid6);
+
+if (nickname === "TCR") {
+    bottomDiv.appendChild(grid7);
+}
+//BOTTOM===DIV===BOTTOM===DIV===BOTTOM===DIV===BOTTOM===DIV===BOTTOM===DIV===BOTTOM===DIV===BOTTOM===DIV===
+
+
+var div2 = createNewDiv();
+div2.style.width = '450px';
+div2.style.color = 'black';
+//div2.innerHTML = 'div2';
+var chatDiv = document.body.appendChild(div2);
+
+var chatInput = document.createElement('input');
+chatInput.className = "form-control";
+chatInput.style.width = "350px";
+chatInput.style.height = "48px";
+chatInput.setAttribute("id", "chatinput");
+chatInput.setAttribute("type", "text");
+chatInput.style.display = "inline";
+chatDiv.appendChild(chatInput);
+
+var chatBtn = document.createElement('button');
+
+chatBtn.className = "btn btn-secondary";
+chatBtn.setAttribute("id", "chatBtn");
+chatBtn.innerHTML = "Send";
+
+chatDiv.appendChild(chatBtn);
+
+var div3 = createNewDiv();
+div3.style.width = '420px';
+div3.style.height = '250px'
+div3.style.color = 'black';
+div3.style.background = 'rgba(236, 236, 236, 0.5)';
+div3.setAttribute("id", "chatdiv");
+chatDiv.appendChild(div3);
+
+chatBtn.addEventListener('click', function () {
+    var message = nickname + ': ';
+    message += chatInput.value;
+    sock.emit('chat-to-server', message);
+    chatInput.value = '';
+});
+
+chatInput.addEventListener("keyup", function(event) {
+    if (event.keyCode === 13) {
+      event.preventDefault();
+      document.getElementById("chatBtn").click();
+    }
+
+});
+
+
+
+
+//var createLine = document.createElement('hr');
+//createLine.setAttribute("width", "500px");
+
+//document.body.appendChild(grid2);
+//document.body.appendChild(grid3);
+//document.body.appendChild(grid4);
+//document.body.appendChild(grid5);

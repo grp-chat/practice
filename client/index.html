@@ -12,17 +12,45 @@
     <style>
         body {
             /* background-image: url("https://lh3.googleusercontent.com/lBQ2mj4d7FFjrLKByJIA-D45GiJpQtCNrf-h3tfPGi0brLGLcbitu6BUP5HAb4C7MaBG6QR8S-Tpx-eRnesNg9rTEzoHocNmBE3ozV85OgprcJeI4e7VleVYk4PR_MrzFHNDMbHc=w2400"); */
-            background-image: url("https://cinesite-media-cloud-production.s3-accelerate.amazonaws.com/2019/03/7_Cinesite_ML2_LST3440_v51.1129-BURN.jpg");
+            background: url("https://lh3.googleusercontent.com/gJq36D2d2ghwQOROZEm3SkYTotKLkommPXyug3yQ6pnrK2Y-yTvBYypUJYg6emAvmI7gWufFHi1GuIy6A1twz6gHO26BeVNQ2AOxxKlxikulyUQ4pRLR_jx6SEam_I0R86a25lVk=w2400") ;
+            /* background-image: url("https://cinesite-media-cloud-production.s3-accelerate.amazonaws.com/2019/03/7_Cinesite_ML2_LST3440_v51.1129-BURN.jpg"); */
             /* background-image: url("https://static.wikia.nocookie.net/marvel-cinematic-universe-guide/images/8/8e/Nidavellir.png"); */
             /* background-position: center; */
-            background-size: 1550px;
+            background-size: 1300px;
             /* height: 400px;
             width: 100%; */
+            
+        }
+
+        .grid {
+            border-collapse: collapse;
+            display: inline-block;
+            margin-right: 0%;
+            margin-left: 2%;
+            margin-bottom: 3%;
+        }
+
+        .grid td {
+            cursor: pointer;
+            width: 60px;
+            height: 60px;
+            border: 1px solid rgb(0, 0, 0);
+            text-align: center;
+            font-family: sans-serif;
+            font-size: 13px
+        }
+
+        .grid td.clicked {
+            background-color: yellow;
+            font-weight: bold;
+            color: red;
+            
         }
     </style>
 </head>
 <body>
     <h1 id="h1" style="color: gold;">Infinity War!</h1>
+    <!-- <a href="/all.html">See all results</a> -->
 
     <script src="/socket.io/socket.io.js"></script>
     <script src="js/index.js"></script>

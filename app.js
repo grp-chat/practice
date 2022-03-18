@@ -18,7 +18,6 @@ console.log("Server listening at " + PORT);
 //------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------
 var roundNum = 1;
-var connectedUser = '';
 var aumIn = false;
 var aumWins = 0;
 var aumChas = 1;
@@ -59,74 +58,53 @@ var TJYWins = 0;
 var TJYChas = 1;
 var TJYRes = 0;
 
+var users = ["TJY", "LXR", "JL", "LK", "JHA", "SZF"];
+
+function Person(id, r1, p1, r2, p2, inOrOut) {
+    this.id = id;
+    this.r1 = r1;
+    this.p1 = p1;
+    this.r2 = r2;
+    this.p2 = p2;
+    this.inOrOut = inOrOut;
+    this.results = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    this.penalties = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+}
+
+var objLXR = new Person("LXR", 0, 0, 0, 0, false);
+var objLK = new Person("LK", 0, 0, 0, 0, false);
+var objTJY = new Person("TJY", 0, 0, 0, 0, false);
+var objJHA = new Person("JHA", 0, 0, 0, 0, false);
+var objJL = new Person("JL", 0, 0, 0, 0, false);
+var objSZF = new Person("SZF", 0, 0, 0, 0, false);
+var objUsers = [objTJY, objLXR, objJL, objLK, objJHA, objSZF];
+
 //------------------------------------------------------------------------------------------------------
 //------------------------------------------------------------------------------------------------------
 
 io.on('connection', (sock) => {
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~LISTEN FROM CLIENT - CONNECTION~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     sock.on('newuser', (data) => {
-        if (data === "Aum") {
-            aumIn = true;
-            sock.id = "Aum";
+
+        if (data !== "TCR") {
+            var index = users.indexOf(data);
+            objUsers[index].inOrOut = true;
+            sock.id = data;
+            //console.log(objUsers[index].id + " " + objUsers[index].inOrOut + " does this work???")
+        } else {
+            sock.id = data;
         }
-        if (data === "Nina") {
-            ninaIn = true;
-            sock.id = "Nina";
-        }
-        if (data === "LK") {
-            LKIn = true;
-            sock.id = "LK";
-        }
-        if (data === "LXR") {
-            LXRIn = true;
-            sock.id = "LXR";
-        }
-        if (data === "JHA") {
-            JHAIn = true;
-            sock.id = "JHA";
-        }
-        if (data === "SZF") {
-            SZFIn = true;
-            sock.id = "SZF";
-        }
-        if (data === "JL") {
-            JLIn = true;
-            sock.id = "JL";
-        }
-        if (data === "TJY") {
-            TJYIn = true;
-            sock.id = "TJY";
-        }
-        
-        //io.emit('updateallwins', { aumWins, ninaWins });
 
     });
 
     sock.on('disconnect', () => {
-        if (sock.id === "Aum") {
-            aumIn = false;
-        }
-        if (sock.id === "Nina") {
-            ninaIn = false;
-        }
-        if (sock.id === "LK") {
-            LKIn = false;
-        }
-        if (sock.id === "LXR") {
-            LXRIn = false;
-        }
-        if (sock.id === "JHA") {
-            JHAIn = false;
-        }
-        if (sock.id === "SZF") {
-            SZFIn = false;
-        }
-        if (sock.id === "JL") {
-            JLIn = false;
-        }
-        if (sock.id === "TJY") {
-            TJYIn = false;
-        }
+
+        objUsers.forEach((obj) => {
+            if (obj.id === sock.id) {
+                obj.inOrOut = false;
+            }
+        });
+
 
     });
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~LISTEN FROM CLIENT - CONNECTION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -161,7 +139,7 @@ io.on('connection', (sock) => {
     });
 
     sock.on('give', (data) => {
-        
+
         if (data.userId === "LK") {
             LKWins--;
             if (data.giveToId === "JHA") {
@@ -221,12 +199,12 @@ io.on('connection', (sock) => {
         io.emit("lifegained", { giverId, receiverId });
     });
 
-    sock.on('requestlife', (data) => {   
+    sock.on('requestlife', (data) => {
         var requesterId = data.nickname;
         var requestToId = data.requestToId;
         io.emit('sendrequest', { requesterId, requestToId });
-        
-});
+
+    });
 
 
     sock.on('minusWin', (data) => {
@@ -316,56 +294,35 @@ io.on('connection', (sock) => {
     });
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~LISTEN FROM CLIENT - ADD & MINUS CHALLENGES ~~~~~~~~~~~~~~~~~~~~~~~~~~
     sock.on('submit', (data) => {
-        if (data.userId === "AA") {
-            aumRes = data.result;
-            var userId = data.userId;
-            io.emit('updateallresults', {userId , aumRes});
-        }
-        if (data.userId === "NN") {
-            ninaRes = data.result;
-            var userId = data.userId;
-            io.emit('updateallresults', {userId , ninaRes});
-        }
-        if (data.userId === "LK") {
-            LKRes = data.result;
-            var userId = data.userId;
-            io.emit('updateallresults', {userId , LKRes});
-        }
-        if (data.userId === "LXR") {
-            LXRRes = data.result;
-            var userId = data.userId;
-            io.emit('updateallresults', {userId , LXRRes});
-        }
-        if (data.userId === "JHA") {
-            JHARes = data.result;
-            var userId = data.userId;
-            io.emit('updateallresults', {userId , JHARes});
-        }
-        if (data.userId === "SZF") {
-            SZFRes = data.result;
-            var userId = data.userId;
-            io.emit('updateallresults', {userId , SZFRes});
-        }
-        if (data.userId === "JL") {
-            JLRes = data.result;
-            var userId = data.userId;
-            io.emit('updateallresults', {userId , JLRes});
-        }
-        if (data.userId === "TJY") {
-            TJYRes = data.result;
-            var userId = data.userId;
-            io.emit('updateallresults', {userId , TJYRes});
-        }
+
+        var index = users.indexOf(data.nickname);
+        objUsers[index].results[roundNum - 1] = data.result;
+        objUsers[index].penalties[roundNum - 1] = data.penalties;
+        console.log("The result received on server is " + objUsers[index].results[roundNum - 1] + " for user " + objUsers[index].id);
+        io.emit('reshistory', objUsers[index]);
+
     });
 
-    sock.on('challenge', (data) => {   
-            var userId = data;
-            io.emit('sendchallenge', userId);
-            
+    sock.on('editresult', (data) => {
+
+        var index = users.indexOf(data.student);
+        objUsers[index].results[data.round - 1] = data.result;
+        objUsers[index].penalties[data.round - 1] = data.penalties;
+
     });
 
-    sock.on('nextround', (data) => {
-        roundNum = data;
+    sock.on('chat-to-server', (data) => {
+        io.emit('chat-to-clients', data);
+    });
+
+    sock.on('challenge', (data) => {
+        var userId = data;
+        io.emit('sendchallenge', userId);
+
+    });
+
+    sock.on('nextround', () => {
+        roundNum++;
         io.emit('refreshall', roundNum);
     });
 
@@ -373,61 +330,30 @@ io.on('connection', (sock) => {
 
 
 setInterval(function () {
-    if (aumIn === true) {
-        io.emit("transmituser", "Aum");
-    }
-    if (ninaIn === true) {
-        io.emit("transmituser", "Nina");
-    }
-    if (LKIn === true) {
-        io.emit("transmituser", "LK");
-    }
-    if (LXRIn === true) {
-        io.emit("transmituser", "LXR");
-    }
-    if (JHAIn === true) {
-        io.emit("transmituser", "JHA");
-    }
-    if (SZFIn === true) {
-        io.emit("transmituser", "SZF");
-    }
-    if (JLIn === true) {
-        io.emit("transmituser", "JL");
-    }
-    if (TJYIn === true) {
-        io.emit("transmituser", "TJY");
-    }
+    objUsers.forEach((obj) => {
+        if (obj.inOrOut === true) {
+            io.emit("transmituser", obj.id);
+        }
+    });
+
+    objUsers.forEach((obj) => {
+        if (obj.inOrOut === false) {
+            io.emit("userdisconnect", obj.id);
+        }
+    });
+
+
     //dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
 
-    if (aumIn === false) {
-        io.emit('userdisconnect', "Aum");
-    }
-    if (ninaIn === false) {
-        io.emit("userdisconnect", "Nina");
-    }
-    if (LKIn === false) {
-        io.emit('userdisconnect', "LK");
-    }
-    if (LXRIn === false) {
-        io.emit("userdisconnect", "LXR");
-    }
-    if (JHAIn === false) {
-        io.emit("userdisconnect", "JHA");
-    }
-    if (SZFIn === false) {
-        io.emit("userdisconnect", "SZF");
-    }
-    if (JLIn === false) {
-        io.emit("userdisconnect", "JL");
-    }
-    if (TJYIn === false) {
-        io.emit("userdisconnect", "TJY");
-    }
+    /* io.emit('updateallwins', { aumWins, ninaWins, LKWins, LXRWins, JHAWins, SZFWins, JLWins, TJYWins });
+    io.emit('updateallchas', { aumChas, ninaChas, LKChas, LXRChas, JHAChas, SZFChas, JLChas, TJYChas }); */
+
+    objUsers.forEach((obj) => {
+        io.emit("updateallresults", obj);
+
+    });
 
 
-    io.emit('updateallwins', { aumWins, ninaWins, LKWins, LXRWins, JHAWins, SZFWins, JLWins, TJYWins });
-    io.emit('updateallchas', { aumChas, ninaChas, LKChas, LXRChas, JHAChas, SZFChas, JLChas, TJYChas });
-    
 
     /* io.emit('updateAA', aumWins);
     io.emit('updateNN', ninaWins); */
