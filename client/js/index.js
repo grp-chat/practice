@@ -1177,7 +1177,9 @@ function clickableGrid(rows, cols, callback, tblName, userId) {
         }
     }
     grid.rows[0].cells[0].innerHTML = "Round";
+    grid.rows[0].cells[0].style.backgroundColor = "rgba(149, 165, 166, 0.5)";    
     grid.rows[1].cells[0].innerHTML = "Result";
+    grid.rows[1].cells[0].style.backgroundColor = "rgba(149, 165, 166, 0.5)";  
     grid.rows[2].cells[0].innerHTML = "Penalties";
     return grid;
 }
