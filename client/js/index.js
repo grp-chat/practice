@@ -171,15 +171,10 @@ document.body.appendChild(createBotBtn(wordRow + rowNum)); */
 //}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}} LISTENERS FROM SERVER {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 sock.on('transmituser', data => {
 
-    if (nickname === "TCR") {} else {
     var span2Id = data + "span2"
     var togSpan = document.getElementById(span2Id);
     togSpan.style.background = "green";
-    }
     
-    
-    
-
 });
 
 sock.on('userdisconnect', data => {
