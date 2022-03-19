@@ -171,11 +171,12 @@ document.body.appendChild(createBotBtn(wordRow + rowNum)); */
 //}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}} LISTENERS FROM SERVER {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 sock.on('transmituser', data => {
 
-    if (data === "TCR") { } else {
-        var span2Id = data + "span2"
-        var togSpan = document.getElementById(span2Id);
-        togSpan.style.background = "green";
-    }
+    
+    var span2Id = data + "span2"
+    var togSpan = document.getElementById(span2Id);
+    togSpan.style.background = "green";
+    
+    
 
 });
 
@@ -1135,7 +1136,7 @@ function changeBackground(rotation) {
 
 //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-function appendMessage (message) {
+function appendMessage(message) {
     const messageDiv = document.createElement('div');
     messageDiv.innerText = message;
     div3.append(messageDiv);
@@ -1158,7 +1159,7 @@ function clickableGrid(rows, cols, callback, tblName, userId) {
     span2.style = "width:20px;height:20px";
     span2.style.display = "inline-block";
     span2.style.background = "red";
-    if (nickname === "TCR") {span2.style.background = "green";}
+    if (nickname === "TCR") { span2.style.background = "green"; }
     for (var r = 0; r < rows; ++r) {
         var tr = grid.appendChild(document.createElement('tr'));
         for (var c = 0; c < cols; ++c) {
@@ -1178,11 +1179,11 @@ function clickableGrid(rows, cols, callback, tblName, userId) {
         }
     }
     grid.rows[0].cells[0].innerHTML = "Round";
-    grid.rows[0].cells[0].style.backgroundColor = "rgba(222,184,135, 0.7)";    
+    grid.rows[0].cells[0].style.backgroundColor = "rgba(222,184,135, 0.7)";
     grid.rows[1].cells[0].innerHTML = "Result";
-    grid.rows[1].cells[0].style.backgroundColor = "rgba(222,184,135, 0.7)";  
+    grid.rows[1].cells[0].style.backgroundColor = "rgba(222,184,135, 0.7)";
     grid.rows[2].cells[0].innerHTML = "Penalties";
-    grid.rows[2].cells[0].style.backgroundColor = "rgba(222,184,135, 0.7)";  
+    grid.rows[2].cells[0].style.backgroundColor = "rgba(222,184,135, 0.7)";
     return grid;
 }
 
@@ -1543,10 +1544,10 @@ chatBtn.addEventListener('click', function () {
     chatInput.value = '';
 });
 
-chatInput.addEventListener("keyup", function(event) {
+chatInput.addEventListener("keyup", function (event) {
     if (event.keyCode === 13) {
-      event.preventDefault();
-      document.getElementById("chatBtn").click();
+        event.preventDefault();
+        document.getElementById("chatBtn").click();
     }
 
 });
