@@ -1150,14 +1150,14 @@ function clickableGrid(rows, cols, callback, tblName, userId) {
     grid.style = "color:black";
     //grid.style.float = "left";
     redTitle = grid.appendChild(document.createElement('th'));
-    redTitle.style = "background:rgba(255, 0, 0, 0.6); color:white";
+    redTitle.style = "background:rgba(43, 44, 170, 0.6); color:white";
     redTitle.colSpan = 3;
     redTitle.innerHTML = userId;
     var span2 = redTitle.appendChild(document.createElement('span'));
     span2.setAttribute("id", userId + "span2");
     span2.style = "width:20px;height:20px";
     span2.style.display = "inline-block";
-    span2.style.background = "black";
+    span2.style.background = "red";
     if (nickname === "TCR") {span2.style.background = "green";}
     for (var r = 0; r < rows; ++r) {
         var tr = grid.appendChild(document.createElement('tr'));
