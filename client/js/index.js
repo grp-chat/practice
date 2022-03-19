@@ -171,10 +171,12 @@ document.body.appendChild(createBotBtn(wordRow + rowNum)); */
 //}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}} LISTENERS FROM SERVER {{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{
 sock.on('transmituser', data => {
 
-    
+    if (nickname === "TCR") {} else {
     var span2Id = data + "span2"
     var togSpan = document.getElementById(span2Id);
     togSpan.style.background = "green";
+    }
+    
     
     
 
@@ -1159,7 +1161,7 @@ function clickableGrid(rows, cols, callback, tblName, userId) {
     span2.style = "width:20px;height:20px";
     span2.style.display = "inline-block";
     span2.style.background = "red";
-    if (nickname === "TCR") { span2.style.background = "green"; }
+    //if (nickname === "TCR") { span2.style.background = "green"; }
     for (var r = 0; r < rows; ++r) {
         var tr = grid.appendChild(document.createElement('tr'));
         for (var c = 0; c < cols; ++c) {
